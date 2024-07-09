@@ -1,10 +1,22 @@
-FetchVideo – YouTube Video and Shorts Video Downloader.
+FetchVideo - YouTube Video and Shorts Downloader
 
-Using Python, pytube, Django, ffmpeg
+FetchVideo is a web application built with Python Django that allows users to download YouTube videos and shorts effortlessly. It features a clean, user-friendly interface designed for ad-free, high-quality downloads.
 
-ffmpeg link :- [ [https://www.gyan.dev/ffmpeg/builds/](https://www.ffmpeg.org/download.html)](https://www.ffmpeg.org/download.html)
+Features
 
-File : requirement.txt
-       Django==4.2.7
+Download YouTube videos and shorts in high quality.
+User-friendly interface for easy navigation.
+Integrated with FFmpeg for video processing capabilities.
+MySQL database integration for efficient data management.
+
+Requirements
+Django==4.2.7
+
+Resources
+FFmpeg: [Official Website](https://www.ffmpeg.org/download.html)
+
+
+License
+This project is licensed under the MIT License.
 
 
