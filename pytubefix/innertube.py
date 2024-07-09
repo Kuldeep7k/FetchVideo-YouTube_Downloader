@@ -20,12 +20,12 @@ _client_secret = 'SboVhoG9s0rNafixCSGGKXAT'
 
 # Extracted API keys -- unclear what these are linked to.
 _api_keys = [
-    'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8',
-    'AIzaSyCtkvNIR1HCEwzsqK6JuE6KqpyjusIRI30',
-    'AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w',
-    'AIzaSyC8UYZpvA2eknNex0Pjid0_eTLJoDu6los',
-    'AIzaSyCjc_pVEDi4qsv5MtC2dMXzpIaDoRFLsxw',
-    'AIzaSyDHQ9ipnphqTzDqZsbtd8_Ru4_kiKVQe2k'
+    'AIzaSy##########_11qcW8',
+    'AIzaSy##########usIRI30',
+    'AIzaSy##########_yYM39w',
+    'AIzaS##########LJoDu6los',
+    'AIzaS##########DoRFLsxw',
+    'AIzaSy##########kiKVQe2k'
 ]
 
 _default_clients = {
