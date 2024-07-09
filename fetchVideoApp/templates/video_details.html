@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Download - {{ video.title }}{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<div class="main-section container mb-4 mt-2">
+    <h1>{{ video.title }}</h1><br>
+    <h6>Video URL: <a href="{{ video.url }}">{{ video.url }}</a></h6>
+    <h6>Channel Name: {{ video.channel_title }}</h6>
+    <h6>Duration: {{ video.duration }}</h6><br>
+    <img src="{{ video.thumbnail_url }}" alt="Thumbnail" class="img-thumbnail">
+
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+        <div id="liveToast2" class="toast bg-dark text-white border border-danger border-3" role="alert"
+            aria-live="assertive" aria-atomic="true" style="margin-bottom: 40px;">
+            <div class="toast-header bg-danger">
+                <strong class="me-auto text-white text-center">Please Wait Processing - FetchVideo™</strong>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-center">
+                Please wait while the video is being processed..
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function showToast() {
+            var toast = new bootstrap.Toast(document.getElementById('liveToast2'));
+            toast.show();
+        }
+    </script>
+
+    <hr>
+
+    <h3 class="mt-3">Download Links in Highest Available Qualities:</h3>
+    <form method="post" action="{% url 'FetchVideoApp:video_detail' video_id=video.video_id %}">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered mt-3 mx-auto">
+                <tr>
+                    <th>Video Quality</th>
+                    <th>Download Link</th>
+                </tr>
+                {% for video_quality, _ in video_audio_qualities %}
+                <tr>
+                    <td>
+                        {% if video_quality %}
+                        {{ video_quality.format }} ({{ video_quality.fps }} fps)
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if video_quality %}
+                        <button type="submit" name="video_quality" value="{{ video_quality.format }}"
+                            class="btn btn-danger" onclick="showToast()">Download Video</button>
+
+                        <input type="hidden" name="audio_quality"
+                            value="{% if video_quality and video_quality.abr %}{{ video_quality.abr }}{% else %}{{ video_audio_qualities.0.1.abr }}{% endif %}">
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </form>
+
+
+    {% if merge_error %}
+    <div class="alert alert-danger mt-3">{{ merge_error }}</div>
+    {% endif %}
+
+
+    <hr>
+    <h3 class="mt-3">Video Only and Audio Only Download Links:</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered mt-3 mx-auto">
+            <tr>
+                <th>Video Quality</th>
+                <th>Video Link</th>
+                <th>Audio Quality</th>
+                <th>Audio Link</th>
+            </tr>
+            {% for video_quality, audio_quality in video_audio_qualities %}
+            <tr>
+                <td>
+                    {% if video_quality %}
+                    {{ video_quality.format }} ({{ video_quality.fps }} fps)
+                    {% endif %}
+                </td>
+                <td>
+                    {% if video_quality %}
+                    <a href="{{ video_quality.url }}" download="{{ video.title }}_{{ video_quality.format }}_video.mp4"
+                        class="btn btn-warning">Download Video</a>
+
+                    {% endif %}
+                </td>
+                <td>
+                    {% if audio_quality %}
+                    {{ audio_quality.abr }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if audio_quality %}
+                    <a href="{{ audio_quality.url }}" download="{{ video.title }}_{{ audio_quality.abr }}_audio.mp3"
+                        class="btn btn-warning">Download Audio</a>
+
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+</div>
+
+{% endblock %}

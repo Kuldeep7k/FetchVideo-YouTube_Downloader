@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Downloaded{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-2 bg-dark text-light py-4 mb-3">
+  <h1 class="text-center">Video Downloaded</h1>
+
+  {% if temp_dir and video_name %}
+  <h5 class="text-center">Your video is ready to download. Please click below to start downloading</h5><br>
+  <div class="text-center" >
+    <a href="{% url 'FetchVideoApp:download' temp_dir=temp_dir video_name=video_name %}">
+      <button class="btn bg-danger btn-lg text-light"><i class="fa fa-download"></i> Download Now</button>
+    </a>
+    
+  </div>
+  <br>
+  <br>
+  {% else %}
+  <p class="text-center">Error: Unable to generate download link.</p>
+  {% endif %}
+
+  <p class="text-center mt-4">Click below to Download more High quality Videos</p>
+  <div class="text-center">
+    <a href="{% url 'FetchVideoApp:index' %}" class="btn btn-light">Download More</a>
+  </div>
+</div>
+{% endblock %}

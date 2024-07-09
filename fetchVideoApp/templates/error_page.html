@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-2 bg-dark text-light text-center py-5 mb-3">
+  <h2>Oops! Something went wrong.</h2>
+  <br>
+  <h5>{{ error_message }}</h5>
+  <br>
+  <h4 class="text-center mt-4">Please try again later or go back to</h4>
+  <div class="text-center">
+    <a href="{% url 'FetchVideoApp:index' %}" class="btn btn-light btn-lg">HOME</a>
+  </div>
+</div>
+
+
+{% endblock %}

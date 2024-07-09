@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}FetchVideo - YouTube Video & Shorts Downloader{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<!-- Search Box -->
+<div class="search-box-container mb-4 p-4">
+    <h3>Enter Your Link Here:</h3>
+    <form method="post" id="youtubeForm">
+        {% csrf_token %}
+        <div class="input-container pt-2">
+            {{ form.youtube_link }}
+        </div>
+        <div class="input-container pb-3">
+            <button type="submit" class="btn btn-lg" id="liveToastBtn1">Fetch <i
+                    class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </form>
+
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div id="liveToast" class="toast bg-dark text-white border border-danger border-3" role="alert"
+            aria-live="assertive" aria-atomic="true" style="margin-bottom: 40px;">
+            <div class="toast-header bg-danger">
+                <strong class="me-auto text-white text-center">Please Wait - FetchVideo</strong>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-center">
+                We are currently fetching the video details.<br>
+                Thank you for choosing FetchVideo™.
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById('liveToastBtn1').addEventListener('click', function () {
+            var youtubeLinkValue = document.getElementById('id_youtube_link').value.trim(); // Trim whitespace from input
+
+            // Check if input is not empty
+            if (youtubeLinkValue !== '') {
+                var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+                toast.show();
+            }
+        });
+    </script>
+</div>
+
+<div class="container mt-2 bg-dark p-5 text-light py-4 mb-4">
+    <h2>Embark on a seamless video downloading experience with FetchVideo</h2>
+    <p>Your go-to solution for overcoming YouTube's limitations on downloads. Tired of the absence of a built-in
+        download feature? FetchVideo fills this void effortlessly, providing a swift, secure, and user-friendly platform
+        tailored to elevate your video downloading journey effortlessly!</p>
+
+    <h3>Supported Platforms:</h3>
+    <div class="platform-logos-container py-3">
+        <img src="{% static 'android-logo.jpg' %}" alt="Android" style="width: 150px; height: 150px;">
+        <img src="{% static 'windows-logo.jpg' %}" alt="Windows" style="width: 150px; height: 150px;">
+        <img src="{% static 'linux-logo.jpg' %}" alt="Linux" style="width: 150px; height: 150px;">
+        <img src="{% static 'apple-logo.jpg' %}" alt="iOS" style="width: 140px; height: 150px;">
+    </div>
+
+    <h3>Experience Unlimited Video Downloads with FetchVideo - Your Ultimate YouTube Video and Shorts Downloader</h3>
+    <p>Choose Your Preferred Format: Enjoy MP4, MP3, various resolutions including SD, HD, and Full HD - Ensuring
+        Superior Quality Every Time</p>
+    <p>Effortlessly Download Videos: Compatible with Desktops and Mobile Devices, Ensuring Accessibility Anytime,
+        Anywhere</p>
+    <p>Streamline Your Video Downloads with FetchVideo's Intuitive Online Platform</p>
+
+    <h3>Benefit from High-Quality Downloads</h3>
+    <p>Enjoy Crystal Clear Video and Audio with FetchVideo's High-Quality Download Options</p>
+    <p>Explore Multiple Download Options: Select from a Range of Formats and Resolutions to Suit Your Preferences</p>
+
+    <h3>Enjoy a Free and Ad-Free Experience</h3>
+    <p>FetchVideo Offers a Hassle-Free and Ad-Free Video Downloading Experience, Absolutely Free of Charge</p>
+
+    <p>With FetchVideo, unlock the full potential of YouTube video downloads and enjoy a seamless, hassle-free
+        experience from start to finish.</p>
+</div>
+
+<div class="container mt-2 bg-dark p-5 text-light py-4 mb-4">
+
+    <h2>Unlock the easiest method for downloading YouTube videos online effortlessly with FetchVideo:</h2>
+    <div class="row row-cols-1 row-cols-md-4 g-4 pb-4">
+        <div class="col">
+            <div class="card h-100 d-flex flex-column p-2">
+                <img src="{% static 'Step1.png' %}" class="card-img-top img-fluid" alt="Step 1">
+                <div class="card-body">
+                    <h5 class="card-title">Step 1:<br> Copy YouTube Video URL</h5>
+                    <p class="card-text">Copy the URL of the YouTube video you want to download.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 d-flex flex-column p-2">
+                <img src="{% static 'Step2.png' %}" class="card-img-top img-fluid" alt="Step 2">
+                <div class="card-body">
+                    <h5 class="card-title">Step 2:<br> Paste URL</h5>
+                    <p class="card-text">Paste the copied YouTube video link into the input field on our website.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 d-flex flex-column p-2">
+                <img src="{% static 'Step3.png' %}" class="card-img-top img-fluid" alt="Step 3">
+                <div class="card-body">
+                    <h5 class="card-title">Step 3:<br> Select Format and Quality</h5>
+                    <p class="card-text">Choose your desired download quality option.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 d-flex flex-column p-2">
+                <img src="{% static 'Step4.png' %}" class="card-img-top img-fluid" alt="Step 4">
+                <div class="card-body">
+                    <h5 class="card-title">Step 4:<br> Click Download</h5>
+                    <p class="card-text">Click the "Download" button to start the downloading process.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
