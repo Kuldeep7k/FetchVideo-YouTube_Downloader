@@ -141,39 +141,39 @@ def video_detail(request, video_id):
         # Get all available video and audio qualities from pytube
         yt = YouTube(youtube_link)
 
-        # Get all video streams and sort them by resolution in descending order
+        #  Get all video streams and sort them by resolution in descending order
         video_streams = yt.streams.filter(type="video").order_by('resolution')
         video_streams = list(reversed(video_streams))
-        video_qualities = [
-            {
-                'format': stream.resolution,
-                'fps': stream.fps,
-                'url': stream.url,
-                'mime_type': stream.mime_type,
-                'codecs': stream.codecs
-            }
-            for stream in video_streams
-            if (
-                2160 >= int(stream.resolution[:-1]) >= 144 and
-                any("vp9" in codec for codec in stream.codecs)
-            ) or (
-                stream.resolution == "2160p" or stream.resolution == "1440p" 
-            )
-        ]
 
+        # Initialize lists for video qualities
+        av01_qualities = []
+        vp9_qualities = []
 
-        # If video_quality is empty, include all available video qualities
-        if not video_qualities:
-            video_qualities = [
-                {
-                    'format': stream.resolution,
+        for stream in video_streams:
+            resolution = stream.resolution
+            codecs = stream.codecs
+
+            # Collect AV1 streams
+            if 'av01' in codecs:
+                av01_qualities.append({
+                    'format': resolution,
                     'fps': stream.fps,
                     'url': stream.url,
                     'mime_type': stream.mime_type,
-                    'codecs': stream.codecs
-                }
-                for stream in video_streams
-            ]
+                    'codecs': codecs
+                })
+            # Collect VP9 streams
+            elif 'vp9' in codecs:
+                vp9_qualities.append({
+                    'format': resolution,
+                    'fps': stream.fps,
+                    'url': stream.url,
+                    'mime_type': stream.mime_type,
+                    'codecs': codecs
+                })
+
+        # Use AV1 qualities if available, otherwise fall back to VP9 qualities
+        video_qualities = av01_qualities if av01_qualities else vp9_qualities
 
         # Get all available audio streams and sort them by audio bitrate in descending order
         audio_streams = yt.streams.filter(type="audio")
