@@ -11,26 +11,21 @@ from .forms import VideoForm
 from .models import Video
 from datetime import datetime
 
-
 def contact(request):
     # Redirect to youtube.com
     return redirect('https://www.youtube.com/')
-
 
 def about(request):
     # Render the aboutus.html template
     return render(request, 'about.html')
 
-
 def privacypolicy(request):
     # Render the contactus.html template
     return render(request, 'privacypolicy.html')
 
-
 def dmca(request):
     # Render the aboutus.html template
     return render(request, 'dmca.html')
-
 
 def index(request):
     if request.method == 'POST':
@@ -54,13 +49,11 @@ def index(request):
 
     return render(request, 'index.html', {'form': form})
 
-
 # Get the base directory of the Django project
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Define the path to the FFmpeg executable
 FFmpeg_PATH = os.path.join(BASE_DIR, 'ffmpeg', 'bin', 'ffmpeg.exe')
-
 
 def seconds_to_hhmmss(seconds):
     hours = seconds // 3600
@@ -94,7 +87,7 @@ def remove_emojis(text):
                                u"\U0001FA00-\U0001FA6F"  # Chess Symbols
                                u"\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
                                u"\U00002702-\U000027B0"  # Dingbats
-                               u"\U000024C2-\U0001F251"
+                               u"\U000024C2-\U0001F251" 
                                "]+", flags=re.UNICODE)
     return emoji_pattern.sub(r'', text)
 
@@ -196,8 +189,7 @@ def video_detail(request, video_id):
         ]
 
         # Sort audio_qualities in descending order based on abr
-        audio_qualities = sorted(
-            audio_qualities, key=lambda x: extract_numeric_bitrate(x['abr']), reverse=True)
+        audio_qualities = sorted(audio_qualities, key=lambda x: extract_numeric_bitrate(x['abr']), reverse=True)
 
         # Use a dictionary to keep track of the latest item for each 'itag'
         unique_audio_qualities = {}
@@ -208,23 +200,21 @@ def video_detail(request, video_id):
         # Get the values (filtered audio_qualities) from the dictionary
         filtered_audio_qualities = list(unique_audio_qualities.values())
 
+
         # Prepare video_audio_qualities list containing tuples of (video_quality, filtered_audio_qualities)
         video_audio_qualities = []
         for video_quality, filtered_audio_qualities in zip(video_qualities, filtered_audio_qualities):
-            video_audio_qualities.append(
-                (video_quality, filtered_audio_qualities))
+            video_audio_qualities.append((video_quality, filtered_audio_qualities))
 
         # If the number of video qualities is greater than filtered_audio_qualities, add the remaining video qualities separately
         if len(video_qualities) > len(filtered_audio_qualities):
-            remaining_video_qualities = video_qualities[len(
-                filtered_audio_qualities):]
+            remaining_video_qualities = video_qualities[len(filtered_audio_qualities):]
             for video_quality in remaining_video_qualities:
                 video_audio_qualities.append((video_quality, None))
 
         # If the number of filtered_audio_qualities is greater than video qualities, add the remaining filtered_audio_qualities separately
         elif len(filtered_audio_qualities) > len(video_qualities):
-            remaining_audio_qualities = filtered_audio_qualities[len(
-                video_qualities):]
+            remaining_audio_qualities = filtered_audio_qualities[len(video_qualities):]
             for filtered_audio_qualities in remaining_audio_qualities:
                 video_audio_qualities.append((None, filtered_audio_qualities))
 
@@ -235,12 +225,11 @@ def video_detail(request, video_id):
                 video_quality = form.cleaned_data['video_quality']
 
                 # Call the download_video_with_best_audio view with the selected qualities
-                video_name, temp_dir = download_video_with_best_audio(
-                    request, video_id, video_quality)
+                video_name, temp_dir = download_video_with_best_audio(request, video_id, video_quality)
 
                 # Check if the download_video_with_best_audio function returns a path
                 if video_name:
-                    # Use the path to serve the merged video for download
+                # Use the path to serve the merged video for download
                     return render(request, 'download.html', {'video_name': video_name, 'temp_dir': temp_dir})
         else:
             # If it's a GET request, create an empty form
@@ -275,15 +264,13 @@ def download_video_with_best_audio(request, video_id, video_quality):
             yt = YouTube(youtube_link)
 
             # Try to get the video stream with the selected quality
-            video_stream = yt.streams.filter(
-                type="video", resolution=video_quality).first()
+            video_stream = yt.streams.filter(type="video", resolution=video_quality).first()
 
             # Get available audio streams
             audio_streams = yt.streams.filter(type="audio")
 
             # Filter audio streams with itag 251
-            filtered_audio_streams = [
-                stream for stream in audio_streams if stream.itag == 251]
+            filtered_audio_streams = [stream for stream in audio_streams if stream.itag == 251]
 
             # Initialize audio_path as None
             audio_path = None
@@ -294,10 +281,8 @@ def download_video_with_best_audio(request, video_id, video_quality):
                 audio_stream = filtered_audio_streams[-1]
 
                 # Download the audio stream
-                audio_path = os.path.join(temp_dir, f"{video.video_id}_audio.{
-                                          audio_stream.subtype}")
-                audio_stream.download(
-                    output_path=temp_dir, filename=os.path.basename(audio_path))
+                audio_path = os.path.join(temp_dir, f"{video.video_id}_audio.{audio_stream.subtype}")
+                audio_stream.download(output_path=temp_dir, filename=os.path.basename(audio_path))
             else:
                 error_message = "No audio stream with itag 251 found."
                 return render(request, 'error_page.html', {'error_message': error_message}, status=500)
@@ -317,12 +302,9 @@ def download_video_with_best_audio(request, video_id, video_quality):
             if video_stream:
                 # Download video in the temporary directory
                 video_format = video_stream.subtype
-                # Default to 30 fps if fps is not available
-                fps = int(video_stream.fps) if video_stream.fps else 30
-                video_path = os.path.join(
-                    temp_dir, f"{video.video_id}.{video_format}")
-                video_stream.download(output_path=temp_dir, filename=f"{
-                                      video.video_id}.{video_format}")
+                fps = int(video_stream.fps) if video_stream.fps else 30  # Default to 30 fps if fps is not available
+                video_path = os.path.join(temp_dir, f"{video.video_id}.{video_format}")
+                video_stream.download(output_path=temp_dir, filename=f"{video.video_id}.{video_format}")
 
                 # Check if video and audio files were downloaded successfully
                 if not os.path.exists(video_path) or not os.path.exists(audio_path):
@@ -331,26 +313,21 @@ def download_video_with_best_audio(request, video_id, video_quality):
 
                 # Convert audio to M4A format if it's in MP4 or WebM format
                 if audio_format in ['mp4', 'webm']:
-                    m4a_audio_path = os.path.join(
-                        temp_dir, f"{video.video_id}_audio.m4a")
-
+                    m4a_audio_path = os.path.join(temp_dir, f"{video.video_id}_audio.m4a")
+                    
                     if audio_format == 'mp4':
                         # For MP4 audio, simply copy the audio stream without conversion
-                        cmd = f'"{
-                            FFmpeg_PATH}" -i "{audio_path}" -vn -c:a copy "{m4a_audio_path}"'
+                        cmd = f'"{FFmpeg_PATH}" -i "{audio_path}" -vn -c:a copy "{m4a_audio_path}"'
                     elif audio_format == 'webm':
                         # For WebM audio, convert it to M4A without changing the quality
-                        cmd = f'"{
-                            FFmpeg_PATH}" -i "{audio_path}" -vn -c:a aac -strict -2 "{m4a_audio_path}"'
+                        cmd = f'"{FFmpeg_PATH}" -i "{audio_path}" -vn -c:a aac -strict -2 "{m4a_audio_path}"'
 
-                    process = subprocess.Popen(shlex.split(
-                        cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout, stderr = process.communicate()
 
                     # Check if the ffmpeg command executed successfully
                     if process.returncode != 0:
-                        error_message = f"Error converting audio to M4A: {
-                            stderr.decode('utf-8')}"
+                        error_message = f"Error converting audio to M4A: {stderr.decode('utf-8')}"
                         return render(request, 'error_page.html', {'error_message': error_message}, status=500)
 
                     # Remove the old audio file
@@ -358,37 +335,32 @@ def download_video_with_best_audio(request, video_id, video_quality):
                         print(f"Removing old audio file: {audio_path}")
                         os.remove(audio_path)
                     except Exception as e:
-                        error_message = f"Error removing old audio file: {
-                            str(e)}"
+                        error_message = f"Error removing old audio file: {str(e)}"
                         return render(request, 'error_page.html', {'error_message': error_message}, status=500)
 
                     # Replace the audio path with the M4A file
                     audio_path = m4a_audio_path
 
                 # Merge video and audio using ffmpeg, output as WebM
-                merged_filename = f"{sanitize_video_title(
-                    video.title)}_-_{video_quality}_{fps}fps.mp4"
+                merged_filename = f"{sanitize_video_title(video.title)}_-_{video_quality}_{fps}fps.mp4"
 
                 merged_path = os.path.join(temp_dir, merged_filename)
-                cmd = f'"{FFmpeg_PATH}" -i "{video_path}" -i "{
-                    audio_path}" -c:v copy -c:a copy "{merged_path}"'
+                cmd = f'"{FFmpeg_PATH}" -i "{video_path}" -i "{audio_path}" -c:v copy -c:a copy "{merged_path}"'
                 print(f"\nMerging video and audio: {cmd}\n")
 
-                process = subprocess.Popen(shlex.split(
-                    cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = process.communicate()
 
                 # Check if the ffmpeg command executed successfully
                 if process.returncode != 0:
-                    error_message = f"Error merging video and audio: {
-                        stderr.decode('utf-8')}"
+                    error_message = f"Error merging video and audio: {stderr.decode('utf-8')}"
                     return render(request, 'error_page.html', {'error_message': error_message}, status=500)
 
                 # Check if the merged file exists using merged_path
                 if not os.path.exists(merged_path):
                     error_message = "Error creating merged video."
                     return render(request, 'error_page.html', {'error_message': error_message}, status=500)
-
+                
                  # Determine the video format using the file extension
                 _, file_extension = os.path.splitext(merged_path)
                 file_extension = file_extension.lstrip('.').lower()
@@ -397,18 +369,15 @@ def download_video_with_best_audio(request, video_id, video_quality):
                 if file_extension == 'webm':
                     new_filename = merged_filename[:-3]
                     mp4_merged_path = os.path.join(temp_dir, new_filename)
-                    cmd_convert_to_mp4 = f'"{
-                        FFmpeg_PATH}" -i "{merged_path}" -c:v copy -c:a copy "{mp4_merged_path}.mp4"'
+                    cmd_convert_to_mp4 = f'"{FFmpeg_PATH}" -i "{merged_path}" -c:v copy -c:a copy "{mp4_merged_path}.mp4"'
                     print(f"\nConverting WebM to MP4: {cmd_convert_to_mp4}\n")
 
-                    process_convert_to_mp4 = subprocess.Popen(shlex.split(
-                        cmd_convert_to_mp4), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    process_convert_to_mp4 = subprocess.Popen(shlex.split(cmd_convert_to_mp4), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout_convert_to_mp4, stderr_convert_to_mp4 = process_convert_to_mp4.communicate()
 
                     # Check if the conversion to MP4 executed successfully
                     if process_convert_to_mp4.returncode != 0:
-                        error_message = f"Error converting WebM to MP4: {
-                            stderr_convert_to_mp4.decode('utf-8')}"
+                        error_message = f"Error converting WebM to MP4: {stderr_convert_to_mp4.decode('utf-8')}"
                         return render(request, 'error_page.html', {'error_message': error_message}, status=500)
 
                     # Remove the original WebM file after converting to MP4
@@ -440,8 +409,9 @@ def download_video_with_best_audio(request, video_id, video_quality):
                     error_message = "Error removing audio file."
                     return render(request, 'error_page.html', {'error_message': error_message}, status=500)
 
-                relative_temp_dir = os.path.relpath(
-                    temp_dir, settings.MEDIA_ROOT)
+
+
+                relative_temp_dir = os.path.relpath(temp_dir, settings.MEDIA_ROOT)
 
                 return merged_filename, relative_temp_dir
 
@@ -455,25 +425,21 @@ def download_video_with_best_audio(request, video_id, video_quality):
 def download(request, temp_dir, video_name):
     try:
         # Construct the relative path to the video file
-        relative_video_path = os.path.join(
-            'media', temp_dir, video_name.replace('\\', '/'))
+        relative_video_path = os.path.join('media', temp_dir, video_name.replace('\\', '/'))
 
         # Verify file existence
         if not os.path.exists(relative_video_path):
             raise FileNotFoundError("Merged video file not found.")
-
+        
         with open(relative_video_path, 'rb') as video_file:
-            response = HttpResponse(
-                video_file.read(), content_type='video/mp4')
-            response['Content-Disposition'] = f'attachment; filename="{
-                video_name}"'
+            response = HttpResponse(video_file.read(), content_type='video/mp4')
+            response['Content-Disposition'] = f'attachment; filename="{video_name}"'
             return response
 
     except FileNotFoundError:
         return HttpResponseNotFound("Error: Merged video file not found.")
 
-
 def undefined_page(request, undefined_path):
-    error_message = f"The page you are looking for ('{
-        undefined_path}') does not exist."
+    error_message = f"The page you are looking for ('{undefined_path}') does not exist."
     return render(request, 'error_page.html', {'error_message': error_message})
+
