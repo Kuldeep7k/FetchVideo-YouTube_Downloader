@@ -11,6 +11,7 @@ FetchVideo is a web app built with Python Django for downloading YouTube videos 
 ## Requirements
 - Django
 - FFmpeg (Download from [here](https://www.ffmpeg.org/download.html))
+- pytubefix
 
 ## License
 This project is licensed under the MIT License.
