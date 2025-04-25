@@ -1,0 +1,21 @@
+# Ignore Python bytecode
+__pycache__/
+**/__pycache__/
+**/*.pyc
+
+# Ignore temporary folders
+temp/
+
+# Ignore virtual environments
+venv/
+
+# Optional: Ignore system-specific or editor files
+*.log
+.DS_Store
+*.swp
+.env
+
+# Optional: Ignore cache folders
+cache/
+temp.txt
+OUTPUT
