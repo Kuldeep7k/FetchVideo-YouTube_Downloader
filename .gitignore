@@ -2,18 +2,28 @@
 __pycache__/
 **/__pycache__/
 **/*.pyc
+**/*.pyc
+*.py[cod]
 
 # Ignore temporary folders
 temp/
 
+# SQLite database
+db.sqlite3
+
 # Ignore virtual environments
 venv/
+media/
 
 # Optional: Ignore system-specific or editor files
 *.log
 .DS_Store
 *.swp
 .env
+
+# System-specific or editor files
+.DS_Store
+*.swp
 
 # Optional: Ignore cache folders
 cache/
