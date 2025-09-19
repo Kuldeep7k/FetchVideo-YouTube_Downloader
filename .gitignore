@@ -1,31 +1,302 @@
-# Ignore Python bytecode
+# Byte-compiled / optimized / DLL files
 __pycache__/
-**/__pycache__/
-**/*.pyc
-**/*.pyc
 *.py[cod]
+*$py.class
 
-# Ignore temporary folders
-temp/
+# C extensions
+*.so
 
-# SQLite database
-db.sqlite3
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Ignore virtual environments
-venv/
-media/
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
 
-# Optional: Ignore system-specific or editor files
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
 *.log
-.DS_Store
-*.swp
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# System-specific or editor files
-.DS_Store
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# IDE and Editor files
+.vscode/
+.idea/
 *.swp
+*.swo
+*~
 
-# Optional: Ignore cache folders
-cache/
-temp.txt
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files and directories
+temp/
+temp_*/
+session_*/
+*.tmp
+*.temp
+*.bak
+
+# Media and cache directories (selective ignore)
+# Uncomment the lines below if you want to ignore these directories
+# media/
+# cache/
+
+# But keep the structure - ignore contents only
+media/temp_*
+media/session_*
+cache/*.cache
+cache/*.lock
+
+# Log files
+*.log
+logs/
+debug.log
+cleanup_scheduler.log
+
+# Database files
+*.sqlite3
+*.sqlite3-journal
+*.db
+
+# FFmpeg temporary files
+ffmpeg/temp/
+*.ffindex
+
+# Build and distribution
+build/
+dist/
+*.spec
+
+# Node.js (if any frontend assets)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional: Ignore sensitive files
+secrets.json
+config/local_settings.py
+config/production.py
+
+# Project specific
 OUTPUT
+temp.txt
+test_*.py
+*.exe
+*.msi
+*.dmg
+
+# Virtual environments (multiple patterns)
+.venv/
+venv/
+ENV/
+env/
+.ENV/
+.env/
+
+# Python virtual environments
+bin/
+include/
+lib/
+share/
+pyvenv.cfg
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# setuptools
+.setuptools-cfg
+
+# pytest
+.pytest_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+.coverage.*
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IPython
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# ruff
+.ruff_cache/
+
+# mypy
+.mypy_cache/
+
+# Django specific
+staticfiles/
+static/
+*.sqlite3
+*.sqlite3-journal
+local_settings.py
+settings_local.py
+
+# Media files (large files that shouldn't be in git)
+# Uncomment if you want to ignore all media files
+# media/
+# !media/.gitkeep
+
+# Cache files
+cache/
+*.cache
+*.lock
+
+# Temporary download files
+downloads/
+temp_downloads/
+
+# Session files
+sessions/
+
+# Backup files
+*.backup
+*.bak
+*~

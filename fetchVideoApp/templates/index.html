@@ -1,128 +1,476 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load static %} {% block title %}FetchVideo -
+YouTube Video & Shorts Downloader{% endblock %} {% block content %}
 
-{% load static %}
-
-{% block title %}FetchVideo - YouTube Video & Shorts Downloader{% endblock %}
-
-{% block content %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-
-<!-- Search Box -->
-<div class="search-box-container mb-4 p-4">
-    <h3>Enter Your Link Here:</h3>
-    <form method="post" id="youtubeForm">
-        {% csrf_token %}
-        <div class="input-container pt-2">
-            {{ form.youtube_link }}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">
+          Download <span class="text-gradient">YouTube</span> Videos & Shorts
+        </h1>
+        <p class="lead mb-4 text-white">
+          Experience lightning-fast downloads with crystal-clear quality. Get
+          your favorite YouTube content in MP4, MP3, and more formats.
+        </p>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <span class="badge bg-primary fs-6 px-3 py-2"
+            ><i class="fas fa-bolt me-1"></i>Lightning Fast</span
+          >
+          <span class="badge bg-success fs-6 px-3 py-2"
+            ><i class="fas fa-shield-alt me-1"></i>Secure & Safe</span
+          >
+          <span class="badge bg-warning fs-6 px-3 py-2"
+            ><i class="fas fa-star me-1"></i>High Quality</span
+          >
+          <span class="badge bg-info fs-6 px-3 py-2"
+            ><i class="fas fa-globe me-1"></i>Free Forever</span
+          >
         </div>
-        <div class="input-container pb-3">
-            <button type="submit" class="btn btn-lg" id="liveToastBtn1">Fetch <i
-                    class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="col-lg-6">
+        <div class="text-center">
+          <img
+            src="{% static 'logo.jpeg' %}"
+            alt="FetchVideo Logo"
+            class="img-fluid mb-4"
+            style="max-width: 300px"
+          />
         </div>
-    </form>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
-        <div id="liveToast" class="toast bg-dark text-white border border-danger border-3" role="alert"
-            aria-live="assertive" aria-atomic="true" style="margin-bottom: 40px;">
-            <div class="toast-header bg-danger">
-                <strong class="me-auto text-white text-center">Please Wait - FetchVideo</strong>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
+<!-- Download Form Section -->
+<section class="download-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card-custom p-4 mb-4">
+          <div class="text-center mb-4">
+            <h2 class="h3 mb-3">Enter Your YouTube Link</h2>
+            <p class="text-white">
+              Paste your YouTube video or shorts URL below to get started
+            </p>
+          </div>
+
+          <form method="post" id="youtubeForm" class="mb-4">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <input
+                type="url"
+                class="form-control form-control-lg bg-dark border-secondary text-light"
+                id="id_youtube_link"
+                name="youtube_link"
+                placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                required
+                style="height: 48px; --bs-input-placeholder-color: #adb5bd"
+              />
+              <button
+                type="submit"
+                class="btn btn-custom btn-lg"
+                id="fetchBtn"
+                style="height: 48px"
+              >
+                <i class="fas fa-search me-2"></i>Fetch Video
+              </button>
             </div>
-            <div class="toast-body text-center">
-                We are currently fetching the video details.<br>
-                Thank you for choosing FetchVideo™.
-            </div>
+          </form>
+
+          <!-- Progress Bar (hidden initially) -->
+          <div class="progress mb-3 d-none" id="progressContainer">
+            <div
+              class="progress-bar progress-bar-striped progress-bar-animated bg-danger"
+              role="progressbar"
+              style="width: 0%"
+              id="progressBar"
+            ></div>
+          </div>
+          <div class="text-center text-muted small d-none" id="progressText">
+            Initializing...
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h1 mb-3">
+        Why Choose <span class="text-gradient">FetchVideo</span>?
+      </h2>
+      <p class="lead text-white">
+        Experience the best YouTube downloading service with premium features
+      </p>
     </div>
 
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center h-100">
+          <div class="feature-icon mb-3">
+            <i class="fas fa-rocket text-primary" style="font-size: 3rem"></i>
+          </div>
+          <h4 class="mb-3">Lightning Fast</h4>
+          <p class="text-white">
+            Download videos in seconds with our optimized servers and advanced
+            technology.
+          </p>
+        </div>
+      </div>
 
-    <script>
-        document.getElementById('liveToastBtn1').addEventListener('click', function () {
-            var youtubeLinkValue = document.getElementById('id_youtube_link').value.trim(); // Trim whitespace from input
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center h-100">
+          <div class="feature-icon mb-3">
+            <i
+              class="fas fa-shield-alt text-success"
+              style="font-size: 3rem"
+            ></i>
+          </div>
+          <h4 class="mb-3">Secure & Private</h4>
+          <p class="text-white">
+            Your downloads are completely private. We don't store your videos or
+            personal data.
+          </p>
+        </div>
+      </div>
 
-            // Check if input is not empty
-            if (youtubeLinkValue !== '') {
-                var toast = new bootstrap.Toast(document.getElementById('liveToast'));
-                toast.show();
-            }
-        });
-    </script>
-</div>
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center h-100">
+          <div class="feature-icon mb-3">
+            <i class="fas fa-crown text-warning" style="font-size: 3rem"></i>
+          </div>
+          <h4 class="mb-3">High Quality</h4>
+          <p class="text-white">
+            Get the best available quality - from SD to 4K, we support all
+            resolutions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="container mt-2 bg-dark p-5 text-light py-4 mb-4">
-    <h2>Embark on a seamless video downloading experience with FetchVideo</h2>
-    <p>Your go-to solution for overcoming YouTube's limitations on downloads. Tired of the absence of a built-in
-        download feature? FetchVideo fills this void effortlessly, providing a swift, secure, and user-friendly platform
-        tailored to elevate your video downloading journey effortlessly!</p>
-
-    <h3>Supported Platforms:</h3>
-    <div class="platform-logos-container py-3">
-        <img src="{% static 'android-logo.jpg' %}" alt="Android" style="width: 150px; height: 150px;">
-        <img src="{% static 'windows-logo.jpg' %}" alt="Windows" style="width: 150px; height: 150px;">
-        <img src="{% static 'linux-logo.jpg' %}" alt="Linux" style="width: 150px; height: 150px;">
-        <img src="{% static 'apple-logo.jpg' %}" alt="iOS" style="width: 140px; height: 150px;">
+<!-- How It Works Section -->
+<section class="how-it-works-section py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h1 mb-3">How It <span class="text-gradient">Works</span></h2>
+      <p class="lead text-white">
+        Get your YouTube videos in just 3 simple steps
+      </p>
     </div>
 
-    <h3>Experience Unlimited Video Downloads with FetchVideo - Your Ultimate YouTube Video and Shorts Downloader</h3>
-    <p>Choose Your Preferred Format: Enjoy MP4, MP3, various resolutions including SD, HD, and Full HD - Ensuring
-        Superior Quality Every Time</p>
-    <p>Effortlessly Download Videos: Compatible with Desktops and Mobile Devices, Ensuring Accessibility Anytime,
-        Anywhere</p>
-    <p>Streamline Your Video Downloads with FetchVideo's Intuitive Online Platform</p>
-
-    <h3>Benefit from High-Quality Downloads</h3>
-    <p>Enjoy Crystal Clear Video and Audio with FetchVideo's High-Quality Download Options</p>
-    <p>Explore Multiple Download Options: Select from a Range of Formats and Resolutions to Suit Your Preferences</p>
-
-    <h3>Enjoy a Free and Ad-Free Experience</h3>
-    <p>FetchVideo Offers a Hassle-Free and Ad-Free Video Downloading Experience, Absolutely Free of Charge</p>
-
-    <p>With FetchVideo, unlock the full potential of YouTube video downloads and enjoy a seamless, hassle-free
-        experience from start to finish.</p>
-</div>
-
-<div class="container mt-2 bg-dark p-5 text-light py-4 mb-4">
-
-    <h2>Unlock the easiest method for downloading YouTube videos online effortlessly with FetchVideo:</h2>
-    <div class="row row-cols-1 row-cols-md-4 g-4 pb-4">
-        <div class="col">
-            <div class="card h-100 d-flex flex-column p-2">
-                <img src="{% static 'Step1.png' %}" class="card-img-top img-fluid" alt="Step 1">
-                <div class="card-body">
-                    <h5 class="card-title">Step 1:<br> Copy YouTube Video URL</h5>
-                    <p class="card-text">Copy the URL of the YouTube video you want to download.</p>
-                </div>
-            </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center">
+          <div class="step-number mb-3">
+            <span
+              class="badge bg-primary rounded-circle p-3"
+              style="
+                font-size: 2rem;
+                width: 80px;
+                height: 80px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+              "
+              >1</span
+            >
+          </div>
+          <h4 class="mb-3">Copy URL</h4>
+          <p class="text-white">
+            Copy the YouTube video URL from your browser or share button.
+          </p>
+          <div class="mt-3">
+            <img
+              src="{% static 'Step1.png' %}"
+              alt="Step 1"
+              class="img-fluid rounded"
+              style="max-height: 150px"
+            />
+          </div>
         </div>
-        <div class="col">
-            <div class="card h-100 d-flex flex-column p-2">
-                <img src="{% static 'Step2.png' %}" class="card-img-top img-fluid" alt="Step 2">
-                <div class="card-body">
-                    <h5 class="card-title">Step 2:<br> Paste URL</h5>
-                    <p class="card-text">Paste the copied YouTube video link into the input field on our website.</p>
-                </div>
-            </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center">
+          <div class="step-number mb-3">
+            <span
+              class="badge bg-primary rounded-circle p-3"
+              style="
+                font-size: 2rem;
+                width: 80px;
+                height: 80px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+              "
+              >2</span
+            >
+          </div>
+          <h4 class="mb-3">Paste & Fetch</h4>
+          <p class="text-white">
+            Paste the URL in our input field and click fetch to get video
+            details.
+          </p>
+          <div class="mt-3">
+            <img
+              src="{% static 'Step2.png' %}"
+              alt="Step 2"
+              class="img-fluid rounded"
+              style="max-height: 150px"
+            />
+          </div>
         </div>
-        <div class="col">
-            <div class="card h-100 d-flex flex-column p-2">
-                <img src="{% static 'Step3.png' %}" class="card-img-top img-fluid" alt="Step 3">
-                <div class="card-body">
-                    <h5 class="card-title">Step 3:<br> Select Format and Quality</h5>
-                    <p class="card-text">Choose your desired download quality option.</p>
-                </div>
-            </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center">
+          <div class="step-number mb-3">
+            <span
+              class="badge bg-primary rounded-circle p-3"
+              style="
+                font-size: 2rem;
+                width: 80px;
+                height: 80px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+              "
+              >3</span
+            >
+          </div>
+          <h4 class="mb-3">Download</h4>
+          <p class="text-white">
+            Choose your preferred quality and format, then download instantly.
+          </p>
+          <div class="mt-3">
+            <img
+              src="{% static 'Step3.png' %}"
+              alt="Step 3"
+              class="img-fluid rounded"
+              style="max-height: 150px"
+            />
+          </div>
         </div>
-        <div class="col">
-            <div class="card h-100 d-flex flex-column p-2">
-                <img src="{% static 'Step4.png' %}" class="card-img-top img-fluid" alt="Step 4">
-                <div class="card-body">
-                    <h5 class="card-title">Step 4:<br> Click Download</h5>
-                    <p class="card-text">Click the "Download" button to start the downloading process.</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- Supported Formats Section -->
+<section class="formats-section py-5 bg-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h1 mb-3">
+        Supported <span class="text-gradient">Formats</span>
+      </h2>
+      <p class="lead text-white">
+        Download in your preferred format and quality
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-3">
+        <div class="card-custom p-4 text-center">
+          <i
+            class="fas fa-video text-danger mb-3"
+            style="font-size: 2.5rem"
+          ></i>
+          <h5>MP4 Video</h5>
+          <p class="text-white small">
+            High-quality video format compatible with all devices
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card-custom p-4 text-center">
+          <i class="fas fa-music text-info mb-3" style="font-size: 2.5rem"></i>
+          <h5>MP3 Audio</h5>
+          <p class="text-white small">
+            Extract audio only in high-quality MP3 format
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card-custom p-4 text-center">
+          <i
+            class="fas fa-mobile-alt text-success mb-3"
+            style="font-size: 2.5rem"
+          ></i>
+          <h5>Mobile Ready</h5>
+          <p class="text-white small">
+            Optimized formats for mobile devices and tablets
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card-custom p-4 text-center">
+          <i
+            class="fas fa-desktop text-warning mb-3"
+            style="font-size: 2.5rem"
+          ></i>
+          <h5>HD Quality</h5>
+          <p class="text-white small">
+            Download in HD, Full HD, and even 4K resolution
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Platform Support Section -->
+<section class="platform-section py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h1 mb-3">
+        Works on All <span class="text-gradient">Platforms</span>
+      </h2>
+      <p class="lead text-white">Compatible with desktop and mobile devices</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-6 col-md-3 text-center mb-4">
+        <div class="platform-icon mb-2">
+          <img
+            src="{% static 'windows-logo.jpg' %}"
+            alt="Windows"
+            class="img-fluid rounded-circle"
+            style="width: 80px; height: 80px; object-fit: cover"
+          />
+        </div>
+        <h6>Windows</h6>
+      </div>
+
+      <div class="col-6 col-md-3 text-center mb-4">
+        <div class="platform-icon mb-2">
+          <img
+            src="{% static 'apple-logo.jpg' %}"
+            alt="macOS"
+            class="img-fluid rounded-circle"
+            style="width: 80px; height: 80px; object-fit: cover"
+          />
+        </div>
+        <h6>macOS</h6>
+      </div>
+
+      <div class="col-6 col-md-3 text-center mb-4">
+        <div class="platform-icon mb-2">
+          <img
+            src="{% static 'linux-logo.jpg' %}"
+            alt="Linux"
+            class="img-fluid rounded-circle"
+            style="width: 80px; height: 80px; object-fit: cover"
+          />
+        </div>
+        <h6>Linux</h6>
+      </div>
+
+      <div class="col-6 col-md-3 text-center mb-4">
+        <div class="platform-icon mb-2">
+          <img
+            src="{% static 'android-logo.jpg' %}"
+            alt="Android"
+            class="img-fluid rounded-circle"
+            style="width: 80px; height: 80px; object-fit: cover"
+          />
+        </div>
+        <h6>Android</h6>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Toast Notifications -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div
+    id="liveToast"
+    class="toast bg-dark text-white border border-danger border-3"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="toast-header bg-danger">
+      <i class="fas fa-cog fa-spin me-2"></i>
+      <strong class="me-auto text-white">Processing - FetchVideo</strong>
+      <button
+        type="button"
+        class="btn-close bg-white"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="toast-body">
+      We are fetching the video details. This may take a few seconds...
+    </div>
+  </div>
 </div>
+
+<script>
+  document.getElementById("fetchBtn").addEventListener("click", function (e) {
+    const urlInput = document.getElementById("id_youtube_link");
+    const url = urlInput.value.trim();
+
+    if (!url) {
+      showErrorToast("Please enter a YouTube URL");
+      e.preventDefault();
+      return;
+    }
+
+    // Basic URL validation
+    if (!url.includes("youtube.com") && !url.includes("youtu.be")) {
+      showErrorToast("Please enter a valid YouTube URL");
+      e.preventDefault();
+      return;
+    }
+
+    // Show progress
+    document.getElementById("progressContainer").classList.remove("d-none");
+    document.getElementById("progressText").classList.remove("d-none");
+
+    // Show toast
+    const toast = new bootstrap.Toast(document.getElementById("liveToast"));
+    toast.show();
+
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 90) progress = 90;
+
+      document.getElementById("progressBar").style.width = progress + "%";
+      document.getElementById("progressText").textContent =
+        "Fetching video details... " + Math.round(progress) + "%";
+
+      if (progress >= 90) {
+        clearInterval(progressInterval);
+      }
+    }, 500);
+  });
+
+  // Add input validation styling
+  document
+    .getElementById("id_youtube_link")
+    .addEventListener("input", function () {
+      const url = this.value.trim();
+      if (url && (url.includes("youtube.com") || url.includes("youtu.be"))) {
+        this.classList.add("is-valid");
+        this.classList.remove("is-invalid");
+      } else if (url) {
+        this.classList.add("is-invalid");
+        this.classList.remove("is-valid");
+      } else {
+        this.classList.remove("is-valid", "is-invalid");
+      }
+    });
+</script>
 
 {% endblock %}

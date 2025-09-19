@@ -1,122 +1,240 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Download - {{ video.title }}{% endblock %}
 
 {% block content %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-
-<div class="main-section container mb-4 mt-2">
-    <h1>{{ video.title }}</h1><br>
-    <h6>Video URL: <a href="{{ video.url }}">{{ video.url }}</a></h6>
-    <h6>Channel Name: {{ video.channel_title }}</h6>
-    <h6>Duration: {{ video.duration }}</h6><br>
-    <img src="{{ video.thumbnail_url }}" alt="Thumbnail" class="img-thumbnail">
-
-    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
-        <div id="liveToast2" class="toast bg-dark text-white border border-danger border-3" role="alert"
-            aria-live="assertive" aria-atomic="true" style="margin-bottom: 40px;">
-            <div class="toast-header bg-danger">
-                <strong class="me-auto text-white text-center">Please Wait Processing - FetchVideo™</strong>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body text-center">
-                Please wait while the video is being processed..
-            </div>
+<div class="container py-5">
+  <!-- Video Info Card -->
+  <div class="card-custom p-4 mb-4">
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="img-fluid rounded shadow" style="width: 100%" />
+      </div>
+      <div class="col-md-8">
+        <h1 class="h2 mb-3">{{ video.title }}</h1>
+        <div class="mb-3">
+          <span class="badge bg-secondary me-2">
+            <i class="fas fa-user me-1"></i>{{ video.channel_title }}
+          </span>
+          <span class="badge bg-info me-2">
+            <i class="fas fa-clock me-1"></i>{{ video.duration }}
+          </span>
+          <span class="badge bg-success">
+            <i class="fas fa-eye me-1"></i>{{ video.views }} views
+          </span>
         </div>
+        <p class="text-muted mb-3">
+          <i class="fas fa-link me-1"></i>
+          <a href="{{ video.url }}" target="_blank" class="text-decoration-none">{{ video.url }}</a>
+        </p>
+      </div>
     </div>
+  </div>
 
+  <!-- Download Options -->
+  <!-- Video Downloads -->
+  <div class="card-custom p-4">
+    <h3 class="mb-4">
+      <i class="fas fa-video text-primary me-2"></i>
+      Video Downloads
+    </h3>
+    <p class="text-muted small mb-4">
+      Download video with audio in various quality combinations
+    </p>
 
-    <script>
-        function showToast() {
-            var toast = new bootstrap.Toast(document.getElementById('liveToast2'));
-            toast.show();
-        }
-    </script>
-
-    <hr>
-
-    <h3 class="mt-3">Download Links in Highest Available Qualities:</h3>
     <form method="post" action="{% url 'FetchVideoApp:video_detail' video_id=video.video_id %}">
-        {% csrf_token %}
-        <div class="table-responsive">
-            <table class="table table-bordered mt-3 mx-auto">
-                <tr>
-                    <th>Video Quality</th>
-                    <th>Download Link</th>
-                </tr>
-                {% for video_quality, _ in video_audio_qualities %}
-                <tr>
-                    <td>
-                        {% if video_quality %}
-                        {{ video_quality.format }} ({{ video_quality.fps }} fps)
-                        {% endif %}
-                    </td>
+      {% csrf_token %}
 
-                    <td>
-                        {% if video_quality %}
-                        <button type="submit" name="video_quality" value="{{ video_quality.format }}"
-                            class="btn btn-danger" onclick="showToast()">Download Video</button>
-
-                        <input type="hidden" name="audio_quality"
-                            value="{% if video_quality and video_quality.abr %}{{ video_quality.abr }}{% else %}{{ video_audio_qualities.0.1.abr }}{% endif %}">
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+      <div class="row g-3">
+        {% for video_quality in video_qualities %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card border-secondary h-100">
+            <div class="card-body text-center">
+              <div class="mb-2">
+                <span class="badge bg-primary fs-6">{{ video_quality.format }}</span>
+                <span class="badge bg-info ms-1">{{ video_quality.fps }}fps</span>
+              </div>
+              <div class="mb-2">
+                {% if video_quality.codecs %}
+                  {% for codec in video_quality.codecs %}
+                    {% if 'av01' in codec|lower %}
+                      <span class="badge bg-success">AV1</span>
+                    {% elif 'vp9' in codec|lower %}
+                      <span class="badge bg-warning">VP9</span>
+                    {% elif 'avc1' in codec|lower %}
+                      <span class="badge bg-danger">H264</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ codec|slice:":4"|upper }}</span>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+              <h6 class="card-title small mb-2">Video + Audio</h6>
+              {% if video_quality.file_size_formatted != 'Unknown' %}
+                <small class="text-muted d-block mb-2">{{ video_quality.file_size_formatted }}</small>
+              {% endif %}
+              <button type="submit" name="video_quality" value="{{ video_quality.format }}" class="btn btn-custom btn-sm w-100" onclick="showProcessingToast()">
+                <i class="fas fa-download me-1"></i>Download
+              </button>
+              <input type="hidden" name="audio_quality" value="{% if audio_qualities %}{{ audio_qualities.0.abr }}{% else %}128kbps{% endif %}" />
+            </div>
+          </div>
         </div>
+        {% endfor %}
+      </div>
     </form>
+  </div>
 
+  <!-- Audio Downloads -->
+  <div class="card-custom p-4 mt-4">
+    <h4 class="mb-3">
+      <i class="fas fa-music text-success me-2"></i>
+      Audio Downloads
+    </h4>
+    <p class="text-muted small mb-4">Download audio in various formats and qualities</p>
 
-    {% if merge_error %}
-    <div class="alert alert-danger mt-3">{{ merge_error }}</div>
-    {% endif %}
-
-
-    <hr>
-    <h3 class="mt-3">Video Only and Audio Only Download Links:</h3>
-    <div class="table-responsive">
-        <table class="table table-bordered mt-3 mx-auto">
-            <tr>
-                <th>Video Quality</th>
-                <th>Video Link</th>
-                <th>Audio Quality</th>
-                <th>Audio Link</th>
-            </tr>
-            {% for video_quality, audio_quality in video_audio_qualities %}
-            <tr>
-                <td>
-                    {% if video_quality %}
-                    {{ video_quality.format }} ({{ video_quality.fps }} fps)
-                    {% endif %}
-                </td>
-                <td>
-                    {% if video_quality %}
-                    <a href="{{ video_quality.url }}" download="{{ video.title }}_{{ video_quality.format }}_video.mp4"
-                        class="btn btn-warning">Download Video</a>
-
-                    {% endif %}
-                </td>
-                <td>
-                    {% if audio_quality %}
-                    {{ audio_quality.abr }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if audio_quality %}
-                    <a href="{{ audio_quality.url }}" download="{{ video.title }}_{{ audio_quality.abr }}_audio.mp3"
-                        class="btn btn-warning">Download Audio</a>
-
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div class="row g-3">
+      {% for audio_quality in audio_qualities %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-secondary h-100">
+          <div class="card-body text-center">
+            <div class="mb-2">
+              <span class="badge bg-primary fs-6">{{ audio_quality.abr }}</span>
+            </div>
+            <div class="mb-2">
+              {% if audio_quality.audio_codec %}
+                {% if 'mp4a' in audio_quality.audio_codec|lower %}
+                  <span class="badge bg-success">AAC</span>
+                {% elif 'opus' in audio_quality.audio_codec|lower %}
+                  <span class="badge bg-warning">Opus</span>
+                {% elif 'mp3' in audio_quality.audio_codec|lower %}
+                  <span class="badge bg-danger">MP3</span>
+                {% elif 'vorbis' in audio_quality.audio_codec|lower %}
+                  <span class="badge bg-info">Vorbis</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ audio_quality.audio_codec|upper }}</span>
+                {% endif %}
+              {% endif %}
+            </div>
+            <h6 class="card-title small mb-2">Audio Only</h6>
+            {% if audio_quality.file_size_formatted != 'Unknown' %}
+              <small class="text-muted d-block mb-2">{{ audio_quality.file_size_formatted }}</small>
+            {% endif %}
+            <a href="{{ audio_quality.url }}" download="{{ video.title }}_{{ audio_quality.abr }}_{{ audio_quality.audio_codec }}.{{ audio_quality.mime_type|slice:"6:"|lower }}" class="btn btn-success btn-sm w-100">
+              <i class="fas fa-download me-1"></i>Download
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
+  </div>
 
+  <!-- Video Only Downloads -->
+  <div class="card-custom p-4 mt-4">
+    <h4 class="mb-3">
+      <i class="fas fa-video text-warning me-2"></i>
+      Video Only (No Audio)
+    </h4>
+    <p class="text-muted small mb-4">Download video streams without audio</p>
 
+    <div class="row g-3">
+      {% for video_quality in video_qualities %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-secondary h-100">
+          <div class="card-body text-center">
+            <div class="mb-2">
+              <span class="badge bg-primary fs-6">{{ video_quality.format }}</span>
+              <span class="badge bg-info ms-1">{{ video_quality.fps }}fps</span>
+            </div>
+            <div class="mb-2">
+              {% if video_quality.codecs %}
+                {% for codec in video_quality.codecs %}
+                  {% if 'av01' in codec|lower %}
+                    <span class="badge bg-success">AV1</span>
+                  {% elif 'vp9' in codec|lower %}
+                    <span class="badge bg-warning">VP9</span>
+                  {% elif 'avc1' in codec|lower %}
+                    <span class="badge bg-danger">H264</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ codec|slice:":4"|upper }}</span>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </div>
+            <h6 class="card-title small mb-2">Video Only</h6>
+            {% if video_quality.file_size_formatted != 'Unknown' %}
+              <small class="text-muted d-block mb-2">{{ video_quality.file_size_formatted }}</small>
+            {% endif %}
+            <a href="{{ video_quality.url }}" download="{{ video.title }}_{{ video_quality.format }}_{{ video_quality.fps }}fps.{{ video_quality.mime_type|slice:"6:"|lower }}" class="btn btn-warning btn-sm w-100">
+              <i class="fas fa-download me-1"></i>Download
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 
+<!-- Processing Toast -->
+<div class="toast-container position-fixed top-50 start-50 translate-middle">
+  <div id="processingToast" class="toast bg-dark text-white border border-primary" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body text-center p-4">
+      <div class="mb-3">
+        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+      </div>
+      <div class="mb-2">
+        <strong>Your video is being prepared for download</strong>
+      </div>
+      <div class="small text-muted">
+        Please wait while we process your request...
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showProcessingToast() {
+    const toastElement = document.getElementById("processingToast");
+    const toast = new bootstrap.Toast(toastElement, {
+      autohide: false,  // Keep toast visible until manually hidden
+      animation: true
+    });
+    toast.show();
+
+    // Optional: Add a manual close after a very long time as fallback
+    setTimeout(() => {
+      if (toastElement.classList.contains('show')) {
+        toast.hide();
+      }
+    }, 300000); // 5 minutes fallback
+  }
+
+  // Add loading state to download buttons - Fixed to allow form submission
+  document.querySelectorAll('button[type="submit"]').forEach((button) => {
+    button.addEventListener("click", function (e) {
+      // Show loading state
+      this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
+
+      // Show the persistent toast
+      showProcessingToast();
+
+      // Allow form to submit first, then disable after a short delay
+      setTimeout(() => {
+        this.disabled = true;
+      }, 100);
+
+      // Don't prevent default - allow form submission
+    });
+  });
+
+  // Add click tracking for download links
+  document.querySelectorAll('a[href*="download"]').forEach((link) => {
+    link.addEventListener("click", function () {
+      this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Starting...';
+      this.classList.add("disabled");
+    });
+  });
+</script>
 {% endblock %}
